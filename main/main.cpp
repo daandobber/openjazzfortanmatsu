@@ -3,18 +3,15 @@ extern "C" {
 #include "bsp/display.h"
 #include "bsp/input.h"
 #include "bsp/audio.h"
+#include "bsp/storage.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "nvs_flash.h"
-#include "esp_vfs_fat.h"
-#include "sdmmc_cmd.h"
-#include "driver/sdmmc_host.h"
 #include "esp_pthread.h"
 #include "esp_heap_caps.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "sdcard.h"
 }
 #include "pax_gfx.h"
 #include <SDL3/SDL.h>
@@ -264,7 +261,7 @@ extern "C" void app_main(void) {
     // the screen isn't just rendering into darkness.
     bsp_display_set_backlight_brightness(100);
 
-    err = sd_mount();
+    err = bsp_storage_mount(BSP_STORAGE_TYPE_SDCARD, "/sd");
     if (err != ESP_OK) {
         ESP_LOGE("openjazz", "SD mount failed: %s", esp_err_to_name(err));
         show_error_screen("SD card not found", "Please insert an SD card and restart the app");
